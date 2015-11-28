@@ -53,51 +53,28 @@ defaults, and introduces a number of Python-only features.
 install -d build/lib
 %{__tar} xf %{SOURCE1} -C build/lib
 
-%if %{with python3}
-rm -rf build-3
-set -- *
-install -d build-3
-cp -a "$@" build-3
-find build-3 -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
-%endif
-
 %build
-%{__python} setup.py build
+%py_build
 
 %if %{with python3}
-cd build-3
-%{__python3} setup.py build
-cd -
+%py3_build
 %endif
 
 %if %{with tests}
-cd build/lib
-PYTHONPATH=. %{__python} tests/flexmock_unittest_test.py
-cd -
+PYTHONPATH=build-2/lib %{__python} tests/flexmock_unittest_test.py
 
 %if %{with python3}
-cd build-3/build/lib
-PYTHONPATH=. %{__python3} tests/flexmock_unittest_test.py
-cd -
+PYTHONPATH=build-3/lib %{__python3} tests/flexmock_unittest_test.py
 %endif
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %if %{with python3}
-%{__python3} setup.py \
-	build -b build-3 \
-	install \
-	--root=$RPM_BUILD_ROOT \
-	--optimize=2
+%py3_install
 %endif
 
-%{__python} setup.py install \
-	--skip-build \
-	--optimize=2 \
-	--root=$RPM_BUILD_ROOT
-
-%{__rm} -r $RPM_BUILD_ROOT%{py_sitescriptdir}/tests
+%py_install
 
 %py_postclean
 
