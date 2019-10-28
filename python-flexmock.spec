@@ -7,7 +7,7 @@
 Summary:	Testing library that makes it easy to create mocks, stubs and fakes
 Name:		python-%{module}
 Version:	0.9.6
-Release:	8
+Release:	9
 License:	BSD
 Group:		Libraries/Python
 Source0:	http://pypi.python.org/packages/source/f/flexmock/flexmock-%{version}.tar.gz
